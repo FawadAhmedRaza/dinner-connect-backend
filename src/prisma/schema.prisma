@@ -1,0 +1,131 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Profile {
+  id              String    @id @default(auto()) @map("_id") @db.ObjectId
+  name            String
+  email           String
+  userId          String    @unique
+  isPhoneVerified Boolean   @default(false)
+  phoneNumber     String?
+  coverImage      String?
+  profileImage    String?
+  bio             String?
+  mood            String?
+  ambience        String[]
+  cuisines        String[]
+  languages       String[]
+  dateOfBirth     DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  EventInvitation EventInvitation[]
+
+  Event Event[]
+}
+
+model Restaurant {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  description String? // Optional description of the restaurant
+  location    String?
+  city        String?
+  state       String?
+  zipCode     String?
+  country     String?
+  phone       String?
+  email       String? // Optional email
+  website     String? // Optional website link
+  openingTime DateTime
+  closingTime DateTime
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  menuItems   String[] // Relation to menu items
+
+  RestaurantImages RestaurantImages[]
+
+  Event Event[]
+}
+
+model RestaurantImages {
+  id           String     @id @default(auto()) @map("_id") @db.ObjectId
+  url          String
+  restaurantId String     @db.ObjectId
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id])
+}
+
+model UserImages {
+  id        String          @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String
+  image     String
+  type      UserImagesTypes @default(PERSONAL)
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+}
+
+model Event {
+  id                    String         @id @default(auto()) @map("_id") @db.ObjectId
+  name                  String
+  description           String?
+  date                  DateTime
+  time                  String?
+  eventType             EVENTTYPE      @default(ATHOME)
+  location              String?
+  resturantId           String?        @db.ObjectId
+  restaurant            Restaurant?    @relation(fields: [resturantId], references: [id])
+  cuisine               String[]
+  ambience              String[]
+  afterDinnerActivities String[]
+  priceType             EVENTPRICETYPE @default(FULL)
+  gifts                 String[]
+  status                EVENTSTATUS    @default(PENDING)
+  createdAt             DateTime       @default(now())
+  updatedAt             DateTime       @updatedAt
+  profileId             String         @db.ObjectId
+
+  profile Profile @relation(fields: [profileId], references: [id])
+
+  EventInvitation EventInvitation[]
+}
+
+model EventInvitation {
+  id        String                @id @default(auto()) @map("_id") @db.ObjectId
+  eventId   String                @db.ObjectId
+  Event     Event                 @relation(fields: [eventId], references: [id])
+  profileId String                @db.ObjectId
+  profile   Profile               @relation(fields: [profileId], references: [id])
+  status    EVENTINVITATIONSTATUS @default(PENDING)
+}
+
+enum UserImagesTypes {
+  PERSONAL
+  DINNER
+  HOME
+}
+
+enum EVENTTYPE {
+  ATRESTURANT
+  ATHOME
+}
+
+enum EVENTPRICETYPE {
+  SPLIT
+  FULL
+}
+
+enum EVENTSTATUS {
+  PENDING
+  CANCELLED
+}
+
+enum EVENTINVITATIONSTATUS {
+  PENDING
+  REJECTED
+  ACCEPTED
+}

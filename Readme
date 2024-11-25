@@ -1,0 +1,62 @@
+# DINNER CONNECT BACKEND
+
+## Overview
+
+This project is a Node.js application designed with modern development practices, featuring a clean architecture and an efficient stack for building robust web applications.
+
+## Tech Stack
+
+- **Node.js**: v20.9.0
+- **Command Line Tools**: Nodemon
+- **Database**: MongoDB
+- **ORM**: Prisma
+
+## Folder Structure
+
+The project is organized into a modular structure for scalability and maintainability:
+
+```
+src/
+├── prisma.schema.js  # Database models and schema
+├── router/           # Routes Handlers
+├── controllers/      # Request handlers and route logic
+├── services/         # Business logic and reusable functions
+├── libs/             # Utility libraries and helper functions
+```
+
+## Getting Started
+
+### Prerequisites
+
+Ensure you have the following installed on your machine:
+
+- Node.js v20.9.0
+- npm (Node Package Manager)
+
+### Installation
+
+1. Clone the repository to your local machine:
+
+   ```bash
+   git clone <repository-url>
+   cd <project-folder>
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+### Running the Application
+
+To start the development server:
+
+```bash
+npm run dev
+```
+
+This command uses **Nodemon** to monitor changes and automatically restart the server during development.
+
+## Database Configuration
+
+This project uses **MongoDB** as the database with **Prisma** ORM for schema management and querying. Make sure your MongoDB server is running, and update the connection string in the Prisma configuration file.
