@@ -63,8 +63,8 @@ const getEventById = async (id) => {
     };
   } catch (error) {
     throw {
-      message: messages.SERVER_ERROR,
-      statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
+      message: error.message || messages.SERVER_ERROR,
+      statusCode: error.statusCode || StatusCodes.INTERNAL_SERVER_ERROR,
     };
   }
 };
@@ -125,8 +125,8 @@ const deleteEvent = async (id) => {
 
 const handleInvitation = async (eventId, userId, action) => {
   try {
-    const eventParticipant = await prisma.eventParticipant.findUnique({
-      where: { eventId_userId: { eventId, userId } },
+    const eventParticipant = await prisma.eventInvitation.findFirst({
+      where: { eventId, profileId: userId },
     });
 
     if (!eventParticipant) {
@@ -137,8 +137,8 @@ const handleInvitation = async (eventId, userId, action) => {
     }
 
     if (action === 'accept') {
-      await prisma.eventParticipant.update({
-        where: { eventId_userId: { eventId, userId } },
+      await prisma.eventInvitation.update({
+        where: { id: eventParticipant.id },
         data: { status: 'ACCEPTED' },
       });
 
@@ -149,8 +149,8 @@ const handleInvitation = async (eventId, userId, action) => {
     }
 
     if (action === 'decline') {
-      await prisma.eventParticipant.update({
-        where: { eventId_userId: { eventId, userId } },
+      await prisma.eventInvitation.update({
+        where: { id: eventParticipant.id },
         data: { status: 'DECLINED' },
       });
 
@@ -165,14 +165,34 @@ const handleInvitation = async (eventId, userId, action) => {
       statusCode: StatusCodes.BAD_REQUEST,
     };
   } catch (error) {
+    console.log('Error', error);
     throw {
-      message: messages.SERVER_ERROR,
-      statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
+      message: error.message || messages.SERVER_ERROR,
+      statusCode: error.statusCode || StatusCodes.INTERNAL_SERVER_ERROR,
     };
   }
 };
 
-const sendEventInvitation = async (eventId, userIds) => {
+const getInvitationsByUser = async (profileId) => {
+  const invitations = await prisma.eventInvitation.findMany({
+    where: { profileId, status: 'PENDING' },
+    include: {
+      Event: {
+        include: {
+          profile: true,
+        },
+      },
+    },
+  });
+
+  return {
+    message: 'Invitations Fetched successfully',
+    data: invitations,
+    statusCode: StatusCodes.OK,
+  };
+};
+
+const sendEventInvitation = async (eventId, userId) => {
   try {
     // Check if the event exists
     const event = await prisma.event.findUnique({ where: { id: eventId } });
@@ -184,27 +204,35 @@ const sendEventInvitation = async (eventId, userIds) => {
       };
     }
 
-    // Create invitations for all users
-    const invitations = userIds.map((userId) => ({
-      eventId,
-      userId,
-      status: 'PENDING', // Default status for new invitations
-    }));
+    const checkInviation = await prisma.eventInvitation.findFirst({
+      where: {
+        profileId: userId,
+        eventId,
+      },
+    });
 
-    await prisma.eventParticipant.createMany({
-      data: invitations,
-      skipDuplicates: true, // Skip if the invitation already exists
+    if (checkInviation) {
+      throw {
+        message: messages.INVITATION_ALREADY_SENT,
+        statusCode: StatusCodes.BAD_REQUEST,
+      };
+    }
+    const newInvitaion = await prisma.eventInvitation.create({
+      data: {
+        profileId: userId,
+        eventId,
+      },
     });
 
     return {
       message: messages.INVITATION_SENT,
-      data: invitations,
+      data: newInvitaion,
       statusCode: StatusCodes.OK,
     };
   } catch (error) {
     throw {
-      message: messages.SERVER_ERROR,
-      statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
+      message: error.message || messages.SERVER_ERROR,
+      statusCode: error.statusCode || StatusCodes.INTERNAL_SERVER_ERROR,
     };
   }
 };
@@ -217,4 +245,5 @@ module.exports = {
   updateEvent,
   deleteEvent,
   handleInvitation,
+  getInvitationsByUser,
 };

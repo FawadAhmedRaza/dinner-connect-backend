@@ -22,6 +22,22 @@ const createRestaurantValidation = [
     .isEmail()
     .withMessage('Email must be a valid email address'),
   body('website').optional().isURL().withMessage('Website must be a valid URL'),
+  body('ambience')
+    .optional()
+    .isJSON()
+    .withMessage('Ambience must be an array')
+    .custom((languages) =>
+      JSON.parse(languages).every((lang) => typeof lang === 'string')
+    )
+    .withMessage('Ambience must be an array of strings'),
+  body('cuisines')
+    .optional()
+    .isJSON()
+    .withMessage('Cuisines must be an array')
+    .custom((cuisines) =>
+      JSON.parse(cuisines).every((lang) => typeof lang === 'string')
+    )
+    .withMessage('Cuisines must be an array of strings'),
 ];
 
 const updateRestaurantValidation = [

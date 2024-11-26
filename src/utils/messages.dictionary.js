@@ -7,6 +7,7 @@ const messages = {
   PROFILE_UPDATED: 'Profile updated successfully',
   PROFILE_CREATED: 'Profile created successfully',
   PROFILE_FETCHED: 'Profile fetched successfully',
+  IMAGES_FETCHED: 'Images fetched successfully',
   PROFILE_DELETED: 'Profile deleted successfully',
   PROFILE_NOTFOUND: 'Profile not found',
   SERVER_ERROR: 'Internal server error.',
@@ -26,6 +27,7 @@ const messages = {
   INVITATION_DECLINE: 'Invitation declined',
   INVALID_ACTION: 'Invalid action',
   INVITATION_SENT: 'Invitations sent successfully',
+  INVITATION_ALREADY_SENT: 'Invitation already sent',
 };
 
 module.exports = messages;

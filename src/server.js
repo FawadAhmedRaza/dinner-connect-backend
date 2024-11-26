@@ -11,6 +11,7 @@ const serviceAccount = require('./config/firebase-service.json');
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
+  // databaseURL: 'https://dinnerapp-162ae.firebaseio.com',
 });
 // Load environment variables
 dotenv.config();

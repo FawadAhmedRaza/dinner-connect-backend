@@ -9,6 +9,8 @@ const ENDPOINTS = {
     byId: `${USERS}/:id`,
     verify: `${USERS}/verify`,
     confirmVerify: `${USERS}/confirmVerify`,
+    images: `${USERS}/images`,
+    imagesById: `${USERS}/images/:id`,
   },
   resturants: {
     root: RESTURANTS,
@@ -19,6 +21,7 @@ const ENDPOINTS = {
     byId: `${EVENTS}/:id`,
     invite: `${EVENTS}/sendInvite`,
     invitation: `${EVENTS}/invitation`,
+    invitationByUser: `${EVENTS}/invitation/:id`,
   },
 };
 

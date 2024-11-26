@@ -19,6 +19,7 @@ const verifyPhone = async (data) => {
       statusCode: StatusCodes.OK,
     };
   } catch (error) {
+    console.log(error);
     return {
       message: error.message || messages.VERIFICATION_SENT_ERROR,
       statusCode: StatusCodes.BAD_REQUEST,
@@ -80,15 +81,14 @@ const createEditProfile = async (userId, data, files) => {
   try {
     let profileImageUrl;
     let coverImageUrl;
-
     // Upload profileImage and coverImage to Google Cloud Storage
-    if (files.profileImage) {
+    if (files?.profileImage) {
       profileImageUrl = await uploadFileToGCS(
         files.profileImage[0],
         'profile-images'
       );
     }
-    if (files.coverImage) {
+    if (files?.coverImage) {
       coverImageUrl = await uploadFileToGCS(
         files.coverImage[0],
         'cover-images'
@@ -98,6 +98,9 @@ const createEditProfile = async (userId, data, files) => {
     const existingProfile = await prisma.profile.findUnique({
       where: { userId },
     });
+
+    delete data?.profileImage;
+    delete data?.coverImage;
     const payloadData = {
       ...data,
       ...(profileImageUrl && { profileImage: profileImageUrl }),
@@ -135,7 +138,6 @@ const createEditProfile = async (userId, data, files) => {
     };
   } catch (error) {
     console.log(error);
-
     throw {
       message: messages.SERVER_ERROR,
       statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
@@ -181,6 +183,33 @@ const getProfileByUserId = async (userId) => {
     };
   }
 };
+const getImagesByProfileId = async (id) => {
+  try {
+    const profile = await prisma.profile.findUnique({ where: { id } });
+
+    if (!profile) {
+      throw {
+        message: messages.PROFILE_NOTFOUND,
+        statusCode: StatusCodes.NOT_FOUND,
+      };
+    }
+    const images = await prisma.userImages.findMany({
+      where: {
+        userId: id,
+      },
+    });
+    return {
+      message: messages.IMAGES_FETCHED,
+      data: images,
+      statusCode: StatusCodes.OK,
+    };
+  } catch (error) {
+    throw {
+      message: messages.SERVER_ERROR,
+      statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
+    };
+  }
+};
 
 const getProfileById = async (id) => {
   try {
@@ -199,9 +228,10 @@ const getProfileById = async (id) => {
       statusCode: StatusCodes.OK,
     };
   } catch (error) {
+    console.log(error);
     throw {
-      message: messages.INTERNAL_SERVER_ERROR,
-      statusCode: StatusCodes.BAD_REQUEST,
+      message: error?.message || messages.SERVER_ERROR,
+      statusCode: error?.statusCode || StatusCodes.INTERNAL_SERVER_ERROR,
     };
   }
 };
@@ -225,30 +255,8 @@ const uploadUserImage = async ({ userId, type, file }) => {
 
     return {
       message: 'Image uploaded and saved successfully',
-      statusCode: StatusCodes.CREATED,
-      data: userImage,
-    };
-  } catch (error) {
-    throw {
-      message: messages.SERVER_ERROR,
-      statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
-    };
-  }
-};
-
-/**
- * Get all images for a user
- */
-const getUserImages = async (userId) => {
-  try {
-    const images = await prisma.userImages.findMany({
-      where: { userId },
-    });
-
-    return {
-      message: 'User images fetched successfully',
       statusCode: StatusCodes.OK,
-      data: images,
+      data: userImage,
     };
   } catch (error) {
     throw {
@@ -264,8 +272,8 @@ module.exports = {
   getProfileByUserId,
   deleteProfile,
   getProfileById,
+  getImagesByProfileId,
   createEditProfile,
   verifyPhone,
   uploadUserImage,
-  getUserImages,
 };

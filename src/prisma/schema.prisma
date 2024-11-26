@@ -16,6 +16,7 @@ model Profile {
   phoneNumber     String?
   coverImage      String?
   profileImage    String?
+  location        String?
   bio             String?
   mood            String?
   ambience        String[]
@@ -28,26 +29,29 @@ model Profile {
   EventInvitation EventInvitation[]
 
   Event Event[]
+
+  UserImages UserImages[]
 }
 
 model Restaurant {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  name        String
-  description String? // Optional description of the restaurant
-  location    String?
-  city        String?
-  state       String?
-  zipCode     String?
-  country     String?
-  phone       String?
-  email       String? // Optional email
-  website     String? // Optional website link
-  openingTime DateTime
-  closingTime DateTime
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  menuItems   String[] // Relation to menu items
-
+  id               String             @id @default(auto()) @map("_id") @db.ObjectId
+  name             String
+  description      String? // Optional description of the restaurant
+  location         String?
+  city             String?
+  state            String?
+  zipCode          String?
+  country          String?
+  phone            String?
+  email            String? // Optional email
+  website          String? // Optional website link
+  openingTime      DateTime
+  closingTime      DateTime
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  menuItems        String[] // Relation to menu items
+  ambience         String[]
+  cuisines         String[]
   RestaurantImages RestaurantImages[]
 
   Event Event[]
@@ -62,7 +66,8 @@ model RestaurantImages {
 
 model UserImages {
   id        String          @id @default(auto()) @map("_id") @db.ObjectId
-  userId    String
+  userId    String          @db.ObjectId
+  profile   Profile         @relation(fields: [userId], references: [id])
   image     String
   type      UserImagesTypes @default(PERSONAL)
   createdAt DateTime        @default(now())
@@ -74,13 +79,15 @@ model Event {
   name                  String
   description           String?
   date                  DateTime
-  time                  String?
   eventType             EVENTTYPE      @default(ATHOME)
   location              String?
   resturantId           String?        @db.ObjectId
   restaurant            Restaurant?    @relation(fields: [resturantId], references: [id])
   cuisine               String[]
   ambience              String[]
+  houseRules            String[]
+  desert                String[]
+  time                  String?        @default("now")
   afterDinnerActivities String[]
   priceType             EVENTPRICETYPE @default(FULL)
   gifts                 String[]
@@ -96,10 +103,10 @@ model Event {
 
 model EventInvitation {
   id        String                @id @default(auto()) @map("_id") @db.ObjectId
-  eventId   String                @db.ObjectId
-  Event     Event                 @relation(fields: [eventId], references: [id])
-  profileId String                @db.ObjectId
-  profile   Profile               @relation(fields: [profileId], references: [id])
+  eventId   String?               @db.ObjectId
+  Event     Event?                @relation(fields: [eventId], references: [id])
+  profileId String?               @db.ObjectId
+  profile   Profile?              @relation(fields: [profileId], references: [id])
   status    EVENTINVITATIONSTATUS @default(PENDING)
 }
 

@@ -6,6 +6,7 @@ const {
   update,
   remove,
   invitation,
+  invitationsByUser,
   sendInvite,
 } = require('../controllers/events.controller');
 const ENDPOINTS = require('./endpoints.routes');
@@ -17,6 +18,7 @@ const {
   sendInviteValidation,
 } = require('../validators/events.validator');
 const validateRequest = require('../validators/validate.schema');
+const { getByIdSchema } = require('../validators/common.validator');
 
 const router = express.Router();
 
@@ -48,6 +50,12 @@ router.delete(
 );
 
 // Invite actions
+router.get(
+  ENDPOINTS.events.invitationByUser,
+  getByIdSchema,
+  validateRequest,
+  invitationsByUser
+);
 router.post(
   ENDPOINTS.events.invitation,
   invitationValidation,

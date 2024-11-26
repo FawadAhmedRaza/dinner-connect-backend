@@ -22,14 +22,7 @@ const profileValidationSchema = [
     .withMessage('Phone number must be a string')
     .isLength({ min: 10, max: 15 })
     .withMessage('Phone number must be between 10 and 15 characters'),
-  body('coverImage')
-    .optional()
-    .isURL()
-    .withMessage('Cover image must be a valid URL'),
-  body('profileImage')
-    .optional()
-    .isURL()
-    .withMessage('Profile image must be a valid URL'),
+
   body('bio')
     .optional()
     .isString()

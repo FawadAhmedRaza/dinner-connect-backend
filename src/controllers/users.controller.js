@@ -4,10 +4,10 @@ const {
   getProfileById,
   getProfileByUserId,
   deleteProfile,
+  getImagesByProfileId,
   createEditProfile,
   getUsers,
   uploadUserImage,
-  getUserImages,
 } = require('../services/users.service');
 const { errorResponse, successResponse } = require('../utils/response.handler');
 
@@ -16,7 +16,7 @@ const sendVerificationCode = async (req, res) => {
 
   try {
     const result = await verifyPhone({ phoneNumber });
-    successResponse(res, result.message, result.statusCode);
+    successResponse(res, result.message, null, result.statusCode);
   } catch (error) {
     errorResponse(res, error.message, error.statusCode);
   }
@@ -27,7 +27,7 @@ const confirmVerificationCode = async (req, res) => {
 
   try {
     const result = await verifyConfirm({ otp });
-    successResponse(res, result.message, result.statusCode);
+    successResponse(res, result.message, null, result.statusCode);
   } catch (error) {
     errorResponse(res, error.message, error.statusCode);
   }
@@ -49,6 +49,7 @@ const createOrEditProfile = async (req, res) => {
     const result = await createEditProfile(userId, req.body, req.files);
     successResponse(res, result.message, result.data, result.statusCode);
   } catch (error) {
+    console.log(error);
     errorResponse(res, error.message, error.statusCode);
   }
 };
@@ -74,6 +75,16 @@ const fetchProfileByUserId = async (req, res) => {
     errorResponse(res, error.message, error.statusCode);
   }
 };
+const fetchImagesByProfileId = async (req, res) => {
+  const { id } = req.params;
+  console.log('req.params', req.params);
+  try {
+    const result = await getImagesByProfileId(id);
+    successResponse(res, result.message, result.data, result.statusCode);
+  } catch (error) {
+    errorResponse(res, error.message, error.statusCode);
+  }
+};
 
 const fetchProfileById = async (req, res) => {
   const { id } = req.params;
@@ -82,6 +93,7 @@ const fetchProfileById = async (req, res) => {
     const result = await getProfileById(id);
     successResponse(res, result.message, result.data, result.statusCode);
   } catch (error) {
+    console.log(error);
     errorResponse(res, error.message, error.statusCode);
   }
 };
@@ -95,22 +107,12 @@ const uploadImage = async (req, res) => {
     }
 
     const result = await uploadUserImage({ userId, type, file: req.file });
-    return successResponse(res, result.message, result.statusCode, result.data);
+    return successResponse(res, result.message, result.data, result.statusCode);
   } catch (error) {
     return errorResponse(res, error.message, error.statusCode || 500);
   }
 };
 
-const getUserImagesController = async (req, res) => {
-  const { userId } = req.params;
-
-  try {
-    const result = await getUserImages(userId);
-    successResponse(res, result.message, result.statusCode, result.data);
-  } catch (error) {
-    errorResponse(res, error.message, error.statusCode || 500);
-  }
-};
 module.exports = {
   sendVerificationCode,
   fetchProfileById,
@@ -119,6 +121,6 @@ module.exports = {
   fetchProfileByUserId,
   fetchUsers,
   confirmVerificationCode,
-  getUserImagesController,
+  fetchImagesByProfileId,
   uploadImage,
 };

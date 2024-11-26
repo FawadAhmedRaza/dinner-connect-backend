@@ -109,15 +109,19 @@ const updateRestaurant = async (id, data, files) => {
         files.map((file) => uploadFileToGCS(file, 'restaurant-images'))
       );
 
-      await prisma.restaurantImages.createMany({
-        data: uploadedImages.map((url) => ({ url, restaurantId: id })),
-      });
+      if (uploadedImages.length) {
+        await prisma.restaurantImages.createMany({
+          data: uploadedImages.map((url) => ({ url, restaurantId: id })),
+        });
+      }
     }
 
     const updatedRestaurant = await prisma.restaurant.update({
       where: { id },
       data: {
         ...data,
+        ...(data.ambience && { ambience: JSON.parse(data.ambience) }),
+        ...(data.cuisines && { cuisines: JSON.parse(data.cuisines) }),
       },
     });
 
@@ -127,6 +131,7 @@ const updateRestaurant = async (id, data, files) => {
       statusCode: StatusCodes.OK,
     };
   } catch (error) {
+    console.log(error);
     throw {
       message: messages.SERVER_ERROR,
       statusCode: StatusCodes.INTERNAL_SERVER_ERROR,

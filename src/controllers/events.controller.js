@@ -5,6 +5,7 @@ const {
   updateEvent,
   deleteEvent,
   handleInvitation,
+  getInvitationsByUser,
   sendEventInvitation,
 } = require('../services/events.service');
 const { errorResponse, successResponse } = require('../utils/response.handler');
@@ -32,6 +33,15 @@ const getById = async (req, res) => {
   try {
     const { id } = req.params;
     const result = await getEventById(id);
+    successResponse(res, result.message, result.data, result.statusCode);
+  } catch (error) {
+    errorResponse(res, error.message, error.statusCode);
+  }
+};
+const invitationsByUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await getInvitationsByUser(id);
     successResponse(res, result.message, result.data, result.statusCode);
   } catch (error) {
     errorResponse(res, error.message, error.statusCode);
@@ -70,8 +80,8 @@ const invitation = async (req, res) => {
 
 const sendInvite = async (req, res) => {
   try {
-    const { eventId, userIds } = req.body; // List of user IDs to invite
-    const result = await sendEventInvitation(eventId, userIds);
+    const { eventId, userId } = req.body; // List of user IDs to invite
+    const result = await sendEventInvitation(eventId, userId);
     successResponse(res, result.message, result.data, result.statusCode);
   } catch (error) {
     errorResponse(res, error.message, error.statusCode);
@@ -86,4 +96,5 @@ module.exports = {
   remove,
   invitation,
   sendInvite,
+  invitationsByUser,
 };

@@ -66,13 +66,17 @@ router.post(
 );
 // Upload user image
 router.post(
-  '/upload',
+  ENDPOINTS.users.images,
   multerStorage.single('image'),
   uploadImageValidation,
   validateRequest,
   controller.uploadImage
 );
+router.get(
+  ENDPOINTS.users.imagesById,
+  getByIdSchema,
+  validateRequest,
+  controller.fetchImagesByProfileId
+);
 
-// Get user images
-router.get('/:userId', controller.getUserImagesController);
 module.exports = router;

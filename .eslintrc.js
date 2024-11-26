@@ -17,5 +17,6 @@ module.exports = {
     'import/no-extraneous-dependencies': 'off',
     'no-throw-literal': 'off',
     'default-param-last': 'off',
+    'no-param-reassign': 'off',
   },
 };

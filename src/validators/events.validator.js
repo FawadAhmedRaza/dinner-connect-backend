@@ -8,10 +8,7 @@ const createEventValidation = [
   body('eventType')
     .isIn(['ATRESTURANT', 'ATHOME'])
     .withMessage('Event type must be either ATRESTURANT or ATHOME'),
-  body('profileId')
-    .notEmpty()
-    .isString()
-    .withMessage('profile id must be a string'),
+
   body('priceType')
     .optional()
     .isIn(['SPLIT', 'FULL'])
@@ -21,6 +18,19 @@ const createEventValidation = [
     .isString()
     .withMessage('Location must be a string'),
   body('cuisine').optional().isArray().withMessage('Cuisine must be an array'),
+  body('ambience')
+    .optional()
+    .isArray()
+    .withMessage('Ambience must be an array'),
+  body('houseRules')
+    .optional()
+    .isArray()
+    .withMessage('House Rules must be an array'),
+  body('afterDinnerActivities')
+    .optional()
+    .isArray()
+    .withMessage('After Dinner Activities must be an array'),
+  body('desert').optional().isArray().withMessage('Deserts must be an array'),
 ];
 
 const updateEventValidation = [
@@ -41,15 +51,13 @@ const invitationValidation = [
   body('action')
     .notEmpty()
     .withMessage('action is required')
-    .isIn(['ACCEPTED', 'DECLINED'])
-    .withMessage('action must be either DECLINED or ACCEPTED'),
+    .isIn(['accept', 'decline'])
+    .withMessage('action must be either accept or decline'),
 ];
 
 const sendInviteValidation = [
   body('eventId').notEmpty().withMessage('Event ID is required'),
-  body('userIds')
-    .isArray({ min: 1 })
-    .withMessage('User IDs must be a non-empty array'),
+  body('userId').notEmpty().withMessage('User id must be a non-empty array'),
 ];
 
 const getEventByIdValidation = [
