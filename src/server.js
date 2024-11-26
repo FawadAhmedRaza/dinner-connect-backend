@@ -7,10 +7,11 @@ const compression = require('compression'); // Response compression
 const dotenv = require('dotenv'); // Load environment variables
 const admin = require('firebase-admin');
 const router = require('./routes/routes');
-const serviceAccount = require('./config/dinnerapp-162ae-firebase-adminsdk-kk7va-cb914a04f5.json');
+const serviceAccount = require('./config/dinnerapp-162ae-firebase-adminsdk-kk7va-c5a7dfce7e.json');
 
+const accountDatail = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
 admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
+  credential: admin.credential.cert(accountDatail),
   // databaseURL: 'https://dinnerapp-162ae.firebaseio.com',
 });
 
