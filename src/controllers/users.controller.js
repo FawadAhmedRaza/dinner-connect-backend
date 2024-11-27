@@ -7,6 +7,7 @@ const {
   getImagesByProfileId,
   createEditProfile,
   getUsers,
+  getProfileByEmail,
   uploadUserImage,
 } = require('../services/users.service');
 const { errorResponse, successResponse } = require('../utils/response.handler');
@@ -49,7 +50,6 @@ const createOrEditProfile = async (req, res) => {
     const result = await createEditProfile(userId, req.body, req.files);
     successResponse(res, result.message, result.data, result.statusCode);
   } catch (error) {
-    console.log(error);
     errorResponse(res, error.message, error.statusCode);
   }
 };
@@ -67,9 +67,18 @@ const removeProfile = async (req, res) => {
 
 const fetchProfileByUserId = async (req, res) => {
   const { id } = req.params;
-  console.log('req.params', req.params);
   try {
     const result = await getProfileByUserId(id);
+    successResponse(res, result.message, result.data, result.statusCode);
+  } catch (error) {
+    errorResponse(res, error.message, error.statusCode);
+  }
+};
+const fetchProfileByEmail = async (req, res) => {
+  const { email } = req.params;
+  console.log(email);
+  try {
+    const result = await getProfileByEmail(email);
     successResponse(res, result.message, result.data, result.statusCode);
   } catch (error) {
     errorResponse(res, error.message, error.statusCode);
@@ -123,4 +132,5 @@ module.exports = {
   confirmVerificationCode,
   fetchImagesByProfileId,
   uploadImage,
+  fetchProfileByEmail,
 };

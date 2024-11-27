@@ -8,29 +8,34 @@ datasource db {
 }
 
 model Profile {
-  id              String    @id @default(auto()) @map("_id") @db.ObjectId
-  name            String
-  email           String
-  userId          String    @unique
-  isPhoneVerified Boolean   @default(false)
-  phoneNumber     String?
-  coverImage      String?
-  profileImage    String?
-  location        String?
-  bio             String?
-  mood            String?
-  ambience        String[]
-  cuisines        String[]
-  languages       String[]
-  dateOfBirth     DateTime?
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  id                String    @id @default(auto()) @map("_id") @db.ObjectId
+  name              String
+  email             String
+  userId            String    @unique
+  isPhoneVerified   Boolean   @default(false)
+  phoneNumber       String?
+  coverImage        String?
+  profileImage      String?
+  location          String?
+  bio               String?
+  mood              String?
+  ambience          String[]
+  cuisines          String[]
+  languages         String[]
+  dateOfBirth       DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  notificationToken String?
 
   EventInvitation EventInvitation[]
 
   Event Event[]
 
   UserImages UserImages[]
+
+  RefrencesNotification Notifications[] @relation("refrence")
+
+  Notifications Notifications[] @relation("profile")
 }
 
 model Restaurant {
@@ -108,6 +113,20 @@ model EventInvitation {
   profileId String?               @db.ObjectId
   profile   Profile?              @relation(fields: [profileId], references: [id])
   status    EVENTINVITATIONSTATUS @default(PENDING)
+}
+
+model Notifications {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  profileId   String?  @db.ObjectId
+  Profile     Profile? @relation(name: "profile", fields: [profileId], references: [id])
+  subject     String?
+  description String?
+  refrenceId  String?  @db.ObjectId
+  refrence    Profile? @relation(name: "refrence", fields: [refrenceId], references: [id])
+  isSystem    Boolean  @default(true)
+  isReaded    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 enum UserImagesTypes {

@@ -26,7 +26,14 @@ const getEvents = async (filters) => {
   try {
     const events = await prisma.event.findMany({
       where: { ...filters },
-      include: { participants: true },
+      include: {
+        EventInvitation: true,
+        restaurant: {
+          include: {
+            RestaurantImages: true,
+          },
+        },
+      },
     });
 
     return {
@@ -35,6 +42,7 @@ const getEvents = async (filters) => {
       statusCode: StatusCodes.OK,
     };
   } catch (error) {
+    console.log(error);
     throw {
       message: messages.SERVER_ERROR,
       statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
@@ -173,12 +181,17 @@ const handleInvitation = async (eventId, userId, action) => {
   }
 };
 
-const getInvitationsByUser = async (profileId) => {
+const getInvitationsByUser = async (profileId, status) => {
   const invitations = await prisma.eventInvitation.findMany({
-    where: { profileId, status: 'PENDING' },
+    where: { profileId, status: status || 'PENDING' },
     include: {
       Event: {
         include: {
+          restaurant: {
+            include: {
+              RestaurantImages: true,
+            },
+          },
           profile: true,
         },
       },

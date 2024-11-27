@@ -27,6 +27,8 @@ const messages = {
   INVITATION_DECLINE: 'Invitation declined',
   INVALID_ACTION: 'Invalid action',
   INVITATION_SENT: 'Invitations sent successfully',
+  NOTIFICAION_FETCHED: 'Notifications fetched successfully',
+  NOTIFICAION_READ: 'Notifications readed',
   INVITATION_ALREADY_SENT: 'Invitation already sent',
 };
 

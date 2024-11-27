@@ -41,7 +41,8 @@ const getById = async (req, res) => {
 const invitationsByUser = async (req, res) => {
   try {
     const { id } = req.params;
-    const result = await getInvitationsByUser(id);
+    const { status } = req.query;
+    const result = await getInvitationsByUser(id, status);
     successResponse(res, result.message, result.data, result.statusCode);
   } catch (error) {
     errorResponse(res, error.message, error.statusCode);

@@ -14,11 +14,6 @@ admin.initializeApp({
   // databaseURL: 'https://dinnerapp-162ae.firebaseio.com',
 });
 
-const fetchAcces = async () => {
-  const token = await admin.credential.cert(accountDatail).getAccessToken();
-  console.log(token);
-};
-fetchAcces();
 // Load environment variables
 dotenv.config();
 

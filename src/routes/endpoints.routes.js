@@ -7,6 +7,7 @@ const ENDPOINTS = {
     root: USERS,
     profile: `${USERS}/profile/:id`,
     byId: `${USERS}/:id`,
+    byEmail: `${USERS}/email/:email`,
     verify: `${USERS}/verify`,
     confirmVerify: `${USERS}/confirmVerify`,
     images: `${USERS}/images`,
@@ -22,6 +23,11 @@ const ENDPOINTS = {
     invite: `${EVENTS}/sendInvite`,
     invitation: `${EVENTS}/invitation`,
     invitationByUser: `${EVENTS}/invitation/:id`,
+  },
+  notifications: {
+    root: `/notifications`,
+    byProfile: `/notifications/:profileId`,
+    byId: `/notifications/:id`,
   },
 };
 

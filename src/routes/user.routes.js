@@ -4,6 +4,7 @@ const { multerStorage } = require('../middlewares/googleCloudUpload');
 const {
   getByIdSchema,
   getByUserIdSchema,
+  getByUserEmailSchema,
 } = require('../validators/common.validator');
 const {
   sendVerificationCodeSchema,
@@ -33,6 +34,12 @@ router.get(
   getByUserIdSchema,
   validateRequest,
   controller.fetchProfileByUserId
+);
+router.get(
+  ENDPOINTS.users.byEmail,
+  getByUserEmailSchema,
+  validateRequest,
+  controller.fetchProfileByEmail
 );
 
 router.delete(

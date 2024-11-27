@@ -21,17 +21,13 @@ const multerStorage = multer({ storage: multer.memoryStorage() }); // Use memory
 const uploadFileToGCS = async (file, folder = '') => {
   try {
     const { buffer, originalname } = file; // Assume multer provides the file
-    const fileName = `${folder}/${Date.now()}_${originalname}`; // Unique file name
+    const fileName = `${folder}/${Date.now()}_${`${originalname}`.replace(/\s+/g, '')}`; // Unique file name
     const fileUpload = bucket.file(fileName);
-
-    const response = await fileUpload.save(buffer, {
+    await fileUpload.save(buffer, {
       contentType: file.mimetype,
     });
-
-    console.log(response);
     return `https://storage.googleapis.com/${bucketName}/${fileName}`; // Public URL of the file
   } catch (error) {
-    console.log('error', error);
     throw 'Error uploading file to Google Cloud Storage';
   }
 };
