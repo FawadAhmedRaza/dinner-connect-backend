@@ -3,6 +3,10 @@ module.exports = {
     browser: true,
     node: true,
     es2021: true,
+    commonjs: true,
+  },
+  parserOptions: {
+    ecmaVersion: 2020, // Allow optional chaining
   },
   extends: [
     'airbnb', // Use Airbnb style guide

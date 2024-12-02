@@ -43,5 +43,6 @@ app.get('/', (req, res) => {
 // Start the server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
+  // eslint-disable-next-line no-console
   console.log(`Dinner Connect Backend is running on ${PORT}`);
 });

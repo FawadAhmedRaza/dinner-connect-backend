@@ -27,15 +27,16 @@ model Profile {
   updatedAt         DateTime  @updatedAt
   notificationToken String?
 
-  EventInvitation EventInvitation[]
-
   Event Event[]
 
   UserImages UserImages[]
 
   RefrencesNotification Notifications[] @relation("refrence")
 
-  Notifications Notifications[] @relation("profile")
+  Notifications   Notifications[] @relation("profile")
+  hostInvitations EventRequest[]  @relation("host")
+  UserInvitations EventRequest[]  @relation("user")
+  EventInvitation EventRequest[]
 }
 
 model Restaurant {
@@ -67,6 +68,13 @@ model RestaurantImages {
   url          String
   restaurantId String     @db.ObjectId
   restaurant   Restaurant @relation(fields: [restaurantId], references: [id])
+}
+
+model EventImages {
+  id      String  @id @default(auto()) @map("_id") @db.ObjectId
+  url     String
+  eventId String? @db.ObjectId
+  event   Event?  @relation(fields: [eventId], references: [id])
 }
 
 model UserImages {
@@ -103,16 +111,20 @@ model Event {
 
   profile Profile @relation(fields: [profileId], references: [id])
 
-  EventInvitation EventInvitation[]
+  EventInvitation EventRequest[]
+  EventImages     EventImages[]
 }
 
-model EventInvitation {
+model EventRequest {
   id        String                @id @default(auto()) @map("_id") @db.ObjectId
   eventId   String?               @db.ObjectId
   Event     Event?                @relation(fields: [eventId], references: [id])
   profileId String?               @db.ObjectId
-  profile   Profile?              @relation(fields: [profileId], references: [id])
+  hostId    String?               @db.ObjectId
+  profile   Profile?              @relation("user", fields: [profileId], references: [id])
+  host      Profile?              @relation("host", fields: [hostId], references: [id])
   status    EVENTINVITATIONSTATUS @default(PENDING)
+  Profile   Profile?              @relation(fields: [profileId], references: [id])
 }
 
 model Notifications {

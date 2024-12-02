@@ -54,7 +54,6 @@ const getRestaurants = async (filters) => {
       statusCode: StatusCodes.OK,
     };
   } catch (error) {
-    console.log(error);
     throw {
       message: messages.SERVER_ERROR,
       statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
@@ -131,7 +130,6 @@ const updateRestaurant = async (id, data, files) => {
       statusCode: StatusCodes.OK,
     };
   } catch (error) {
-    console.log(error);
     throw {
       message: messages.SERVER_ERROR,
       statusCode: StatusCodes.INTERNAL_SERVER_ERROR,

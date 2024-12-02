@@ -30,6 +30,11 @@ const messages = {
   NOTIFICAION_FETCHED: 'Notifications fetched successfully',
   NOTIFICAION_READ: 'Notifications readed',
   INVITATION_ALREADY_SENT: 'Invitation already sent',
+  REQUEST_ALREADY_SENT: 'Request already sent',
+  REQUEST_SENT: 'Request sent successfully',
+  REQUEST_ACCEPTED: 'Request accepted',
+  REQUEST_DECLINE: 'Request declined',
+  REQUEST_NOT_FOUND: 'Request not found',
 };
 
 module.exports = messages;

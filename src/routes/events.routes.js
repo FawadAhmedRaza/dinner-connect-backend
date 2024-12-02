@@ -5,9 +5,10 @@ const {
   getById,
   update,
   remove,
-  invitation,
-  invitationsByUser,
-  sendInvite,
+  requestsByHost,
+  requestsByUser,
+  uploadEventImages,
+  sendRequest,
 } = require('../controllers/events.controller');
 const ENDPOINTS = require('./endpoints.routes');
 const {
@@ -15,14 +16,25 @@ const {
   getEventByIdValidation,
   updateEventValidation,
   invitationValidation,
-  sendInviteValidation,
+  sendRequestValidation,
+  eventImagesValidation,
 } = require('../validators/events.validator');
 const validateRequest = require('../validators/validate.schema');
 const { getByIdSchema } = require('../validators/common.validator');
+const { handleRequest } = require('../services/events.service');
+const { multerStorage } = require('../middlewares/googleCloudUpload');
 
 const router = express.Router();
 
 // CRUD APIs for events
+
+router.post(
+  ENDPOINTS.events.images,
+  multerStorage.array('images'),
+  eventImagesValidation,
+  validateRequest,
+  uploadEventImages
+);
 router.post(
   ENDPOINTS.events.root,
   createEventValidation,
@@ -51,22 +63,28 @@ router.delete(
 
 // Invite actions
 router.get(
-  ENDPOINTS.events.invitationByUser,
+  ENDPOINTS.events.requestByUser,
   getByIdSchema,
   validateRequest,
-  invitationsByUser
+  requestsByUser
+);
+router.get(
+  ENDPOINTS.events.requestByHost,
+  getByIdSchema,
+  validateRequest,
+  requestsByHost
 );
 router.post(
-  ENDPOINTS.events.invitation,
+  ENDPOINTS.events.handleRequest,
   invitationValidation,
   validateRequest,
-  invitation
+  handleRequest
 );
 router.post(
-  ENDPOINTS.events.invite,
-  sendInviteValidation,
+  ENDPOINTS.events.request,
+  sendRequestValidation,
   validateRequest,
-  sendInvite
+  sendRequest
 );
 
 module.exports = router;

@@ -76,7 +76,6 @@ const fetchProfileByUserId = async (req, res) => {
 };
 const fetchProfileByEmail = async (req, res) => {
   const { email } = req.params;
-  console.log(email);
   try {
     const result = await getProfileByEmail(email);
     successResponse(res, result.message, result.data, result.statusCode);
@@ -86,7 +85,6 @@ const fetchProfileByEmail = async (req, res) => {
 };
 const fetchImagesByProfileId = async (req, res) => {
   const { id } = req.params;
-  console.log('req.params', req.params);
   try {
     const result = await getImagesByProfileId(id);
     successResponse(res, result.message, result.data, result.statusCode);
@@ -102,7 +100,6 @@ const fetchProfileById = async (req, res) => {
     const result = await getProfileById(id);
     successResponse(res, result.message, result.data, result.statusCode);
   } catch (error) {
-    console.log(error);
     errorResponse(res, error.message, error.statusCode);
   }
 };

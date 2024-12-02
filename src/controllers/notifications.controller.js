@@ -10,7 +10,7 @@ const fetchAllNotifications = async (req, res) => {
 
   try {
     const { data, message, statusCode } = await getAllNotifications(profileId);
-    successResponse(res, message, statusCode, data);
+    successResponse(res, message, data, statusCode);
   } catch (error) {
     errorResponse(res, error.message, error.statusCode);
   }

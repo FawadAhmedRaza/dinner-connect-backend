@@ -10,6 +10,9 @@ const getAllNotifications = async (profileId) => {
     const notifications = await prisma.notifications.findMany({
       where: { profileId },
       orderBy: { createdAt: 'desc' },
+      include: {
+        refrence: true,
+      },
     });
     return {
       data: notifications,
@@ -44,10 +47,7 @@ const createNotification = async ({
     });
     return notification;
   } catch (error) {
-    throw {
-      message: messages.SERVER_ERROR,
-      statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
-    };
+    return null;
   }
 };
 

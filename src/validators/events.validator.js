@@ -42,12 +42,11 @@ const updateEventValidation = [
     .withMessage('Event date must be a valid ISO8601 date'),
 ];
 const invitationValidation = [
-  body('eventId')
+  body('id')
     .notEmpty()
-    .withMessage('Event id is required')
+    .withMessage('id is required')
     .isString()
-    .withMessage('Event id must be a string'),
-  body('userId').notEmpty().isString().withMessage('User id must be a string'),
+    .withMessage('id must be a string'),
   body('action')
     .notEmpty()
     .withMessage('action is required')
@@ -55,19 +54,25 @@ const invitationValidation = [
     .withMessage('action must be either accept or decline'),
 ];
 
-const sendInviteValidation = [
+const sendRequestValidation = [
   body('eventId').notEmpty().withMessage('Event ID is required'),
-  body('userId').notEmpty().withMessage('User id must be a non-empty array'),
+  body('userId').notEmpty().withMessage('User id must be a string'),
+  body('hostId').notEmpty().withMessage('Host Id must be a string'),
 ];
 
 const getEventByIdValidation = [
   param('id').notEmpty().withMessage('Event ID is required'),
 ];
+const eventImagesValidation = [
+  body('eventId').notEmpty().withMessage('Event ID is required'),
+  body('location').notEmpty().withMessage('location is required'),
+];
 
 module.exports = {
   createEventValidation,
   updateEventValidation,
-  sendInviteValidation,
+  sendRequestValidation,
   getEventByIdValidation,
+  eventImagesValidation,
   invitationValidation,
 };

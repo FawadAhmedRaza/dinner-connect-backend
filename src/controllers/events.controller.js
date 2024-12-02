@@ -4,9 +4,11 @@ const {
   getEventById,
   updateEvent,
   deleteEvent,
-  handleInvitation,
-  getInvitationsByUser,
-  sendEventInvitation,
+  handleRequest,
+  sendEventRequest,
+  getRequestByHost,
+  saveImagesEvent,
+  getRequestByUser,
 } = require('../services/events.service');
 const { errorResponse, successResponse } = require('../utils/response.handler');
 
@@ -38,11 +40,20 @@ const getById = async (req, res) => {
     errorResponse(res, error.message, error.statusCode);
   }
 };
-const invitationsByUser = async (req, res) => {
+const requestsByUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await getRequestByUser(id);
+    successResponse(res, result.message, result.data, result.statusCode);
+  } catch (error) {
+    errorResponse(res, error.message, error.statusCode);
+  }
+};
+const requestsByHost = async (req, res) => {
   try {
     const { id } = req.params;
     const { status } = req.query;
-    const result = await getInvitationsByUser(id, status);
+    const result = await getRequestByHost(id, status);
     successResponse(res, result.message, result.data, result.statusCode);
   } catch (error) {
     errorResponse(res, error.message, error.statusCode);
@@ -69,20 +80,30 @@ const remove = async (req, res) => {
   }
 };
 
-const invitation = async (req, res) => {
+const uploadEventImages = async (req, res) => {
   try {
-    const { eventId, userId, action } = req.body; // `action` can be 'accept' or 'decline'
-    const result = await handleInvitation(eventId, userId, action);
+    const result = await saveImagesEvent(req.body, req.files);
     successResponse(res, result.message, result.data, result.statusCode);
   } catch (error) {
     errorResponse(res, error.message, error.statusCode);
   }
 };
 
-const sendInvite = async (req, res) => {
+const requestHandler = async (req, res) => {
   try {
-    const { eventId, userId } = req.body; // List of user IDs to invite
-    const result = await sendEventInvitation(eventId, userId);
+    const { id, action } = req.body; // `action` can be 'accept' or 'decline'
+    const result = await handleRequest(id, action);
+    successResponse(res, result.message, result.data, result.statusCode);
+  } catch (error) {
+    errorResponse(res, error.message, error.statusCode);
+  }
+};
+
+const sendRequest = async (req, res) => {
+  try {
+    console.log('TRGIRED');
+    const { eventId, userId, hostId } = req.body; // List of user IDs to invite
+    const result = await sendEventRequest(eventId, userId, hostId);
     successResponse(res, result.message, result.data, result.statusCode);
   } catch (error) {
     errorResponse(res, error.message, error.statusCode);
@@ -95,7 +116,9 @@ module.exports = {
   getById,
   update,
   remove,
-  invitation,
-  sendInvite,
-  invitationsByUser,
+  requestHandler,
+  sendRequest,
+  requestsByHost,
+  requestsByUser,
+  uploadEventImages,
 };

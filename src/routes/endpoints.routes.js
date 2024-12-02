@@ -19,10 +19,15 @@ const ENDPOINTS = {
   },
   events: {
     root: EVENTS,
+    images: `${EVENTS}/images`,
     byId: `${EVENTS}/:id`,
     invite: `${EVENTS}/sendInvite`,
     invitation: `${EVENTS}/invitation`,
     invitationByUser: `${EVENTS}/invitation/:id`,
+    request: `${EVENTS}/sendRequest`,
+    handleRequest: `${EVENTS}/handleRequest`,
+    requestByUser: `${EVENTS}/requests/:id`,
+    requestByHost: `${EVENTS}/requests/host/:id`,
   },
   notifications: {
     root: `/notifications`,

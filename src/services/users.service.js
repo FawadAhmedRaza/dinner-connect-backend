@@ -4,6 +4,8 @@ const admin = require('firebase-admin');
 const { StatusCodes } = require('http-status-codes');
 const messages = require('../utils/messages.dictionary');
 const { uploadFileToGCS } = require('../middlewares/googleCloudUpload');
+const sendNotificationToDevice = require('../utils/sendNotificationFirebase');
+const { createNotification } = require('./notifications.service');
 
 const prisma = new PrismaClient();
 const verifyPhone = async (data) => {
@@ -19,6 +21,7 @@ const verifyPhone = async (data) => {
       statusCode: StatusCodes.OK,
     };
   } catch (error) {
+    console.log('Error', error);
     return {
       message: error.message || messages.VERIFICATION_SENT_ERROR,
       statusCode: StatusCodes.BAD_REQUEST,
@@ -80,6 +83,8 @@ const createEditProfile = async (userId, data, files) => {
   try {
     let profileImageUrl;
     let coverImageUrl;
+    data.email = data.email?.toLowerCase();
+
     // Upload profileImage and coverImage to Google Cloud Storage
     if (files && files.profileImage) {
       profileImageUrl = await uploadFileToGCS(
@@ -125,6 +130,21 @@ const createEditProfile = async (userId, data, files) => {
     // Create new profile
     const newProfile = await prisma.profile.create({
       data: payloadData,
+    });
+    const notificationTitle = `Welcome! ${newProfile.name} you'r profile has been created`;
+    const notificationDes = `${newProfile.name} you'r now a part of our cumminity. Thanks For Joining Dinner Connect 🙏`;
+
+    await sendNotificationToDevice(
+      newProfile?.notificationToken,
+      notificationTitle,
+      notificationDes
+    );
+
+    await createNotification({
+      profileId: newProfile.id,
+      subject: notificationTitle,
+      description: notificationDes,
+      isSystem: true,
     });
 
     return {
@@ -173,8 +193,8 @@ const getProfileByUserId = async (userId) => {
     };
   } catch (error) {
     throw {
-      message: messages.SERVER_ERROR,
-      statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
+      message: error.message || messages.SERVER_ERROR,
+      statusCode: error.statusCode || StatusCodes.INTERNAL_SERVER_ERROR,
     };
   }
 };
@@ -196,8 +216,8 @@ const getProfileByEmail = async (email) => {
     };
   } catch (error) {
     throw {
-      message: messages.SERVER_ERROR,
-      statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
+      message: error?.message || messages.SERVER_ERROR,
+      statusCode: error?.statusCode || StatusCodes.INTERNAL_SERVER_ERROR,
     };
   }
 };
@@ -223,8 +243,8 @@ const getImagesByProfileId = async (id) => {
     };
   } catch (error) {
     throw {
-      message: messages.SERVER_ERROR,
-      statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
+      message: error?.message || messages.SERVER_ERROR,
+      statusCode: error?.statusCode || StatusCodes.INTERNAL_SERVER_ERROR,
     };
   }
 };
