@@ -9,6 +9,7 @@ const {
   getRequestByHost,
   saveImagesEvent,
   getRequestByUser,
+  cancelRequest,
 } = require('../services/events.service');
 const { errorResponse, successResponse } = require('../utils/response.handler');
 
@@ -98,10 +99,18 @@ const requestHandler = async (req, res) => {
     errorResponse(res, error.message, error.statusCode);
   }
 };
+const requestCancel = async (req, res) => {
+  try {
+    const { id } = req.body;
+    const result = await cancelRequest(id);
+    successResponse(res, result.message, result.data, result.statusCode);
+  } catch (error) {
+    errorResponse(res, error.message, error.statusCode);
+  }
+};
 
 const sendRequest = async (req, res) => {
   try {
-    console.log('TRGIRED');
     const { eventId, userId, hostId } = req.body; // List of user IDs to invite
     const result = await sendEventRequest(eventId, userId, hostId);
     successResponse(res, result.message, result.data, result.statusCode);
@@ -120,5 +129,6 @@ module.exports = {
   sendRequest,
   requestsByHost,
   requestsByUser,
+  requestCancel,
   uploadEventImages,
 };

@@ -9,6 +9,8 @@ const {
   requestsByUser,
   uploadEventImages,
   sendRequest,
+  requestHandler,
+  requestCancel,
 } = require('../controllers/events.controller');
 const ENDPOINTS = require('./endpoints.routes');
 const {
@@ -18,10 +20,10 @@ const {
   invitationValidation,
   sendRequestValidation,
   eventImagesValidation,
+  cancelRequestValidation,
 } = require('../validators/events.validator');
 const validateRequest = require('../validators/validate.schema');
 const { getByIdSchema } = require('../validators/common.validator');
-const { handleRequest } = require('../services/events.service');
 const { multerStorage } = require('../middlewares/googleCloudUpload');
 
 const router = express.Router();
@@ -78,7 +80,13 @@ router.post(
   ENDPOINTS.events.handleRequest,
   invitationValidation,
   validateRequest,
-  handleRequest
+  requestHandler
+);
+router.post(
+  ENDPOINTS.events.cancelRequest,
+  cancelRequestValidation,
+  validateRequest,
+  requestCancel
 );
 router.post(
   ENDPOINTS.events.request,

@@ -10,6 +10,6 @@ const router = express.Router();
 // Routes
 router.get(ENDPOINTS.notifications.byProfile, fetchAllNotifications); // Get all notifications for a user
 
-router.patch(ENDPOINTS.notifications.byId, markNotificationAsRead); // Mark notification as read
+router.post(ENDPOINTS.notifications.byId, markNotificationAsRead); // Mark notification as read
 
 module.exports = router;

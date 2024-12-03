@@ -19,6 +19,8 @@ model Profile {
   location          String?
   bio               String?
   mood              String?
+  maritalStatus     String?
+  price             Int       @default(0)
   ambience          String[]
   cuisines          String[]
   languages         String[]
@@ -100,10 +102,11 @@ model Event {
   ambience              String[]
   houseRules            String[]
   desert                String[]
+  numberofGuests        Int?
+  gift                  String?
   time                  String?        @default("now")
   afterDinnerActivities String[]
   priceType             EVENTPRICETYPE @default(FULL)
-  gifts                 String[]
   status                EVENTSTATUS    @default(PENDING)
   createdAt             DateTime       @default(now())
   updatedAt             DateTime       @updatedAt
@@ -166,4 +169,5 @@ enum EVENTINVITATIONSTATUS {
   PENDING
   REJECTED
   ACCEPTED
+  CANCELLED
 }

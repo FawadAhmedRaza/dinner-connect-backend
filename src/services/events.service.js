@@ -143,6 +143,54 @@ const deleteEvent = async (id) => {
   }
 };
 
+const cancelRequest = async (id) => {
+  try {
+    const eventParticipant = await prisma.eventRequest.findFirst({
+      where: { id },
+      include: {
+        profile: true,
+        Event: true,
+        host: true,
+      },
+    });
+    if (!eventParticipant) {
+      throw {
+        message: messages.REQUEST_NOT_FOUND,
+        statusCode: StatusCodes.NOT_FOUND,
+      };
+    }
+
+    const notificationSub = `${eventParticipant.profile.name} cancel the invitation request.`;
+    const notificationDes = `${eventParticipant.profile.name} cancel your invitaion request for ${eventParticipant?.Event?.name}`;
+
+    await prisma.eventRequest.update({
+      where: { id: eventParticipant.id },
+      data: { status: 'CANCELLED' },
+    });
+    await sendNotificationToDevice(
+      eventParticipant.host.notificationToken,
+      notificationSub,
+      notificationDes
+    );
+    await createNotification({
+      profileId: eventParticipant.hostId,
+      subject: notificationSub,
+      description: notificationDes,
+      isSystem: false,
+      refrenceId: eventParticipant.profileId,
+    });
+    return {
+      success: true,
+      message: messages.REQUEST_CANCELLED,
+      statusCode: StatusCodes.OK,
+    };
+  } catch (error) {
+    throw {
+      message: error.message || messages.SERVER_ERROR,
+      statusCode: error.statusCode || StatusCodes.INTERNAL_SERVER_ERROR,
+    };
+  }
+};
 const handleRequest = async (id, action) => {
   try {
     const eventParticipant = await prisma.eventRequest.findFirst({
@@ -164,6 +212,13 @@ const handleRequest = async (id, action) => {
       throw {
         message: messages.REQUEST_NOT_FOUND,
         statusCode: StatusCodes.NOT_FOUND,
+      };
+    }
+
+    if (eventParticipant.status !== 'PENDING') {
+      throw {
+        message: `You can't ${action}. ${eventParticipant?.status?.toLowerCase()} Request `,
+        statusCode: StatusCodes.BAD_REQUEST,
       };
     }
 
@@ -193,7 +248,7 @@ const handleRequest = async (id, action) => {
     }
 
     if (action === 'decline') {
-      await prisma.eventInvitation.update({
+      await prisma.eventRequest.update({
         where: { id: eventParticipant.id },
         data: { status: 'REJECTED' },
       });
@@ -224,6 +279,7 @@ const handleRequest = async (id, action) => {
       statusCode: StatusCodes.BAD_REQUEST,
     };
   } catch (error) {
+    console.log(error);
     throw {
       message: error.message || messages.SERVER_ERROR,
       statusCode: error.statusCode || StatusCodes.INTERNAL_SERVER_ERROR,
@@ -233,7 +289,12 @@ const handleRequest = async (id, action) => {
 
 const getRequestByUser = async (profileId) => {
   const requests = await prisma.eventRequest.findMany({
-    where: { profileId },
+    where: {
+      profileId,
+      NOT: {
+        status: 'CANCELLED',
+      },
+    },
     include: {
       Event: {
         include: {
@@ -258,7 +319,7 @@ const getRequestByUser = async (profileId) => {
 };
 const getRequestByHost = async (profileId, status) => {
   const requests = await prisma.eventRequest.findMany({
-    where: { profileId, status: status || 'PENDING' },
+    where: { hostId: profileId, status: status || 'PENDING' },
     include: {
       Event: {
         include: {
@@ -284,7 +345,6 @@ const getRequestByHost = async (profileId, status) => {
 
 const sendEventRequest = async (eventId, profileId, hostId) => {
   try {
-    console.log(profileId);
     // Check if the event exists
     const event = await prisma.event.findUnique({
       where: { id: eventId },
@@ -402,4 +462,5 @@ module.exports = {
   getRequestByUser,
   getRequestByHost,
   saveImagesEvent,
+  cancelRequest,
 };

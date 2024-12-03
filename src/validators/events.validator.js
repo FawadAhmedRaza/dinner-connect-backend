@@ -2,6 +2,11 @@ const { body, param } = require('express-validator');
 
 const createEventValidation = [
   body('name').notEmpty().withMessage('Event name is required'),
+  body('numberofGuests')
+    .optional()
+    .isInt()
+    .withMessage('numberofGuests is integar'),
+  body('gift').optional().isString().withMessage('gift must be a string'),
   body('date')
     .isISO8601()
     .withMessage('Event date must be a valid ISO8601 date'),
@@ -53,6 +58,13 @@ const invitationValidation = [
     .isIn(['accept', 'decline'])
     .withMessage('action must be either accept or decline'),
 ];
+const cancelRequestValidation = [
+  body('id')
+    .notEmpty()
+    .withMessage('id is required')
+    .isString()
+    .withMessage('id must be a string'),
+];
 
 const sendRequestValidation = [
   body('eventId').notEmpty().withMessage('Event ID is required'),
@@ -75,4 +87,5 @@ module.exports = {
   getEventByIdValidation,
   eventImagesValidation,
   invitationValidation,
+  cancelRequestValidation,
 };

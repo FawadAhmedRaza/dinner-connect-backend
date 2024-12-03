@@ -33,6 +33,11 @@ const profileValidationSchema = [
     .isString()
     .isLength({ max: 20 })
     .withMessage('Mood must not exceed 20 characters'),
+  body('maritalStatus')
+    .optional()
+    .isString()
+    .isLength({ max: 20 })
+    .withMessage('maritalStatus must not exceed 20 characters'),
   body('languages')
     .optional()
     .isJSON()

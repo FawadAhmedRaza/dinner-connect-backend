@@ -34,6 +34,7 @@ const messages = {
   REQUEST_SENT: 'Request sent successfully',
   REQUEST_ACCEPTED: 'Request accepted',
   REQUEST_DECLINE: 'Request declined',
+  REQUEST_CANCELLED: 'Request cancelled',
   REQUEST_NOT_FOUND: 'Request not found',
 };
 

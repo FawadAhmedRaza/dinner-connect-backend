@@ -26,6 +26,7 @@ const ENDPOINTS = {
     invitationByUser: `${EVENTS}/invitation/:id`,
     request: `${EVENTS}/sendRequest`,
     handleRequest: `${EVENTS}/handleRequest`,
+    cancelRequest: `${EVENTS}/cancelRequest`,
     requestByUser: `${EVENTS}/requests/:id`,
     requestByHost: `${EVENTS}/requests/host/:id`,
   },
