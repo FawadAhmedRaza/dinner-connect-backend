@@ -1,6 +1,8 @@
 const USERS = '/users';
 const RESTURANTS = '/resturants';
 const EVENTS = '/events';
+const REVIEWS = '/reviews';
+const WISHLIST = '/wishlist';
 
 const ENDPOINTS = {
   users: {
@@ -12,6 +14,9 @@ const ENDPOINTS = {
     confirmVerify: `${USERS}/confirmVerify`,
     images: `${USERS}/images`,
     imagesById: `${USERS}/images/:id`,
+  },
+  reviews: {
+    root: `${REVIEWS}`,
   },
   resturants: {
     root: RESTURANTS,
@@ -34,6 +39,10 @@ const ENDPOINTS = {
     root: `/notifications`,
     byProfile: `/notifications/:profileId`,
     byId: `/notifications/:id`,
+  },
+  wishlist: {
+    root: `${WISHLIST}`,
+    byId: `${WISHLIST}/:id`,
   },
 };
 

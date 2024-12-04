@@ -4,9 +4,9 @@ const createEventValidation = [
   body('name').notEmpty().withMessage('Event name is required'),
   body('numberofGuests')
     .optional()
-    .isInt()
-    .withMessage('numberofGuests is integar'),
-  body('gift').optional().isString().withMessage('gift must be a string'),
+    .isString()
+    .withMessage('numberofGuests is string'),
+  body('gifts').optional().isArray().withMessage('gifts must be an array'),
   body('date')
     .isISO8601()
     .withMessage('Event date must be a valid ISO8601 date'),

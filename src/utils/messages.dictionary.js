@@ -36,6 +36,12 @@ const messages = {
   REQUEST_DECLINE: 'Request declined',
   REQUEST_CANCELLED: 'Request cancelled',
   REQUEST_NOT_FOUND: 'Request not found',
+  REVIEW_CREATED_SUCCESSFULLY: 'Review created successfully',
+  REVIEWS_FETCHED_SUCCESSFULLY: 'Review fetched successfully',
+  WISHLISTS_FETCHED_SUCCESSFULLY: 'Wishlist fetched successfully',
+  WISHLIST_CREATED_SUCCESSFULLY: 'Wishlist created successfully',
+  WISHLIST_UPDATED_SUCCESSFULLY: 'Wishlist updated successfully',
+  WISHLIST_DELETED_SUCCESSFULLY: 'Wishlist deleted successfully',
 };
 
 module.exports = messages;

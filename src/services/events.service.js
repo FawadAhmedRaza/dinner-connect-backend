@@ -29,7 +29,6 @@ const getEvents = async (filters) => {
     const events = await prisma.event.findMany({
       where: { ...filters },
       include: {
-        EventInvitation: true,
         restaurant: {
           include: {
             RestaurantImages: true,
@@ -58,7 +57,6 @@ const getEventById = async (id) => {
     const event = await prisma.event.findUnique({
       where: { id },
       include: {
-        EventInvitation: true,
         restaurant: {
           include: {
             RestaurantImages: true,

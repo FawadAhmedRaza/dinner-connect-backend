@@ -17,7 +17,6 @@ const create = async (req, res) => {
 };
 
 const list = async (req, res) => {
-  console.log('Trigred');
   try {
     const filters = req.query;
     const result = await getRestaurants(filters);

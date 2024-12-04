@@ -21,7 +21,6 @@ const verifyPhone = async (data) => {
       statusCode: StatusCodes.OK,
     };
   } catch (error) {
-    console.log('Error', error);
     return {
       message: error.message || messages.VERIFICATION_SENT_ERROR,
       statusCode: StatusCodes.BAD_REQUEST,

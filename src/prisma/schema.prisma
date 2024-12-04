@@ -17,6 +17,7 @@ model Profile {
   coverImage        String?
   profileImage      String?
   location          String?
+  gender            String?
   bio               String?
   mood              String?
   maritalStatus     String?
@@ -39,6 +40,12 @@ model Profile {
   hostInvitations EventRequest[]  @relation("host")
   UserInvitations EventRequest[]  @relation("user")
   EventInvitation EventRequest[]
+
+  MyReviews Review[] @relation(name: "recipient")
+
+  GivenReviews Review[] @relation(name: "profile")
+
+  Wishlist Wishlist[]
 }
 
 model Restaurant {
@@ -46,6 +53,7 @@ model Restaurant {
   name             String
   description      String? // Optional description of the restaurant
   location         String?
+  price            Int?
   city             String?
   state            String?
   zipCode          String?
@@ -102,8 +110,8 @@ model Event {
   ambience              String[]
   houseRules            String[]
   desert                String[]
-  numberofGuests        Int?
-  gift                  String?
+  numberofGuests        String?
+  gifts                 String[]
   time                  String?        @default("now")
   afterDinnerActivities String[]
   priceType             EVENTPRICETYPE @default(FULL)
@@ -116,6 +124,7 @@ model Event {
 
   EventInvitation EventRequest[]
   EventImages     EventImages[]
+  Wishlist        Wishlist[]
 }
 
 model EventRequest {
@@ -142,6 +151,28 @@ model Notifications {
   isReaded    Boolean  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+
+model Review {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  rating      Int?     @default(5)
+  comment     String?
+  recipientId String?  @db.ObjectId
+  recipient   Profile? @relation(name: "recipient", fields: [recipientId], references: [id])
+  profileId   String?  @db.ObjectId
+  Profile     Profile? @relation(name: "profile", fields: [profileId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
+}
+
+model Wishlist {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  profileId String?  @db.ObjectId
+  Profile   Profile? @relation(fields: [profileId], references: [id])
+  eventId   String?  @db.ObjectId
+  Event     Event?   @relation(fields: [eventId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 enum UserImagesTypes {
