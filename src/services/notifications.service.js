@@ -12,6 +12,22 @@ const getAllNotifications = async (profileId) => {
       orderBy: { createdAt: 'desc' },
       include: {
         refrence: true,
+        request: {
+          include: {
+            Event: {
+              include: {
+                restaurant: {
+                  include: {
+                    RestaurantImages: true,
+                  },
+                },
+                profile: true,
+              },
+            },
+            host: true,
+            profile: true,
+          },
+        },
       },
     });
     return {

@@ -128,30 +128,33 @@ model Event {
 }
 
 model EventRequest {
-  id        String                @id @default(auto()) @map("_id") @db.ObjectId
-  eventId   String?               @db.ObjectId
-  Event     Event?                @relation(fields: [eventId], references: [id])
-  profileId String?               @db.ObjectId
-  hostId    String?               @db.ObjectId
-  profile   Profile?              @relation("user", fields: [profileId], references: [id])
-  host      Profile?              @relation("host", fields: [hostId], references: [id])
-  status    EVENTINVITATIONSTATUS @default(PENDING)
-  Profile   Profile?              @relation(fields: [profileId], references: [id])
+  id            String                @id @default(auto()) @map("_id") @db.ObjectId
+  eventId       String?               @db.ObjectId
+  Event         Event?                @relation(fields: [eventId], references: [id])
+  profileId     String?               @db.ObjectId
+  hostId        String?               @db.ObjectId
+  profile       Profile?              @relation("user", fields: [profileId], references: [id])
+  host          Profile?              @relation("host", fields: [hostId], references: [id])
+  status        EVENTINVITATIONSTATUS @default(PENDING)
+  Profile       Profile?              @relation(fields: [profileId], references: [id])
+  Notifications Notifications[]
 }
 
 model Notifications {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  profileId   String?  @db.ObjectId
-  Profile     Profile? @relation(name: "profile", fields: [profileId], references: [id])
+  id          String        @id @default(auto()) @map("_id") @db.ObjectId
+  profileId   String?       @db.ObjectId
+  Profile     Profile?      @relation(name: "profile", fields: [profileId], references: [id])
   subject     String?
   description String?
   type        String?
-  refrenceId  String?  @db.ObjectId
-  refrence    Profile? @relation(name: "refrence", fields: [refrenceId], references: [id])
-  isSystem    Boolean  @default(true)
-  isReaded    Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  refrenceId  String?       @db.ObjectId
+  requestId   String?       @db.ObjectId
+  request     EventRequest? @relation(fields: [requestId], references: [id])
+  refrence    Profile?      @relation(name: "refrence", fields: [refrenceId], references: [id])
+  isSystem    Boolean       @default(true)
+  isReaded    Boolean       @default(false)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
 }
 
 model Review {
