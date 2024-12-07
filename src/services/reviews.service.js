@@ -29,6 +29,7 @@ const review = async (data) => {
       description: notificationDescription,
       isSystem: false,
       refrenceId: newReview.profileId,
+      type: 'review',
     });
 
     return {

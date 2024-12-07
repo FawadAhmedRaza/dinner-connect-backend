@@ -144,6 +144,7 @@ const createEditProfile = async (userId, data, files) => {
       subject: notificationTitle,
       description: notificationDes,
       isSystem: true,
+      type: 'newUser',
     });
 
     return {

@@ -175,6 +175,7 @@ const cancelRequest = async (id) => {
       subject: notificationSub,
       description: notificationDes,
       isSystem: false,
+      type: 'cancelRequest',
       refrenceId: eventParticipant.profileId,
     });
     return {
@@ -238,6 +239,7 @@ const handleRequest = async (id, action) => {
         description: notificationDes,
         isSystem: false,
         refrenceId: invity.id,
+        type: 'acceptRequest',
       });
       return {
         message: messages.REQUEST_ACCEPTED,
@@ -264,6 +266,7 @@ const handleRequest = async (id, action) => {
         description: notificationDes,
         isSystem: false,
         refrenceId: invity?.id,
+        type: 'declineRequest',
       });
 
       return {
@@ -392,6 +395,7 @@ const sendEventRequest = async (eventId, profileId, hostId) => {
       description: notificaitonDes,
       isSystem: false,
       refrenceId: event?.profile?.id,
+      type: 'newRequest',
     });
     return {
       message: messages.REQUEST_SENT,
