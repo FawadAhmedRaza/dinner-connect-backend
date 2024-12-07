@@ -73,10 +73,13 @@ const updateWishlist = async (id, data) => {
   }
 };
 
-const deleteWishlist = async (id) => {
+const deleteWishlist = async (eventId, profileId) => {
   try {
+    const wish = await prisma.wishlist.findFirst({
+      where: { eventId, profileId },
+    });
     await prisma.wishlist.delete({
-      where: { id },
+      where: { id: wish.id },
     });
 
     return {
@@ -86,6 +89,7 @@ const deleteWishlist = async (id) => {
       data: null,
     };
   } catch (error) {
+    console.log(error);
     throw {
       status: StatusCodes.INTERNAL_SERVER_ERROR,
       message: messages.SERVER_ERROR,

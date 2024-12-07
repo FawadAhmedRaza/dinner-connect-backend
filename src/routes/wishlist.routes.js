@@ -24,6 +24,6 @@ router.put(
   validateRequest,
   modifyWishlist
 );
-router.delete(ENDPOINTS.wishlist.byId, removeWishlist);
+router.post(ENDPOINTS.wishlist.delete, removeWishlist);
 
 module.exports = router;

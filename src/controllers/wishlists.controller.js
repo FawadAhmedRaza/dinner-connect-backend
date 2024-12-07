@@ -42,9 +42,9 @@ const modifyWishlist = async (req, res) => {
 const removeWishlist = async (req, res) => {
   try {
     const {
-      params: { id },
+      body: { eventId, profileId },
     } = req;
-    const result = await deleteWishlist(id);
+    const result = await deleteWishlist(eventId, profileId);
     successResponse(res, result.message, result.data, result.statusCode);
   } catch (error) {
     errorResponse(res, error.message, error.statusCode);

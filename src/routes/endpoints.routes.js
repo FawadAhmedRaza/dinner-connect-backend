@@ -43,6 +43,7 @@ const ENDPOINTS = {
   wishlist: {
     root: `${WISHLIST}`,
     byId: `${WISHLIST}/:id`,
+    delete: `${WISHLIST}/delete`,
   },
 };
 
